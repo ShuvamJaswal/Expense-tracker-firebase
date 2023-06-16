@@ -17,7 +17,7 @@ class CustomProfileScreen extends ConsumerWidget {
           onPressed: () {
             context.pop();
           },
-          child: Container(child: Text('Go back')),
+          child: const Text('Go back'),
         ),
       ],
     );

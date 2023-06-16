@@ -18,7 +18,6 @@ class SigninController extends _$SigninController {
     state = const AsyncLoading();
     final signinRepository = ref.watch(signinRepositoryProvider);
 
-    final p = await AsyncValue.guard(() => signinRepository.anonSignin());
-    state = AsyncData(p);
+    state = await AsyncValue.guard(() => signinRepository.anonSignin());
   }
 }

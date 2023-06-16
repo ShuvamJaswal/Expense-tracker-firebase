@@ -45,21 +45,20 @@ class HomeScreen extends ConsumerWidget {
         ],
       ),
       body: FirestoreListView<TransactionModel>(
-        query: query,
-        emptyBuilder: (context) => const Center(child: Text('No data')),
-        errorBuilder: (context, error, stackTrace) => Center(
-          child: Text(error.toString()),
-        ),
-        loadingBuilder: (context) => const Center(
-          child: SpinKitThreeBounce(
-            color: Colors.blueAccent,
-            size: 50.0,
-          ),
-        ),
-        itemBuilder: (context, doc) => TransactionTile(
-          transactionModel: doc.data(),
-        ),
-      ),
+          query: query,
+          emptyBuilder: (context) => const Center(child: Text('No data')),
+          errorBuilder: (context, error, stackTrace) => Center(
+                child: Text(error.toString()),
+              ),
+          loadingBuilder: (context) => const Center(
+                child: SpinKitThreeBounce(
+                  color: Colors.blueAccent,
+                  size: 50.0,
+                ),
+              ),
+          itemBuilder: (context, doc) {
+            return TransactionTile(transactionModel: doc.data());
+          }),
     );
   }
 }
@@ -72,6 +71,8 @@ class TransactionTile extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListTile(
+          onTap: () => context.pushNamed(AppRoute.editTransaction.name,
+              extra: transactionModel),
           title: Text("Name: ${transactionModel.name}"),
           subtitle: Text(
               "Type: ${transactionModel.transactionType == TransactionType.income ? "Income" : "Expense"}"),

@@ -1,5 +1,6 @@
 // ignore: depend_on_referenced_packages
 import 'package:async/async.dart';
+import 'package:expense_tracker/src/features/home/domain/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -21,6 +22,7 @@ enum AppRoute {
   addTransaction,
   profile,
   signin,
+  editTransaction
 }
 
 @riverpod
@@ -46,8 +48,21 @@ GoRouter goRouter(Ref ref) {
             path: 'transactions/add',
             name: AppRoute.addTransaction.name,
             pageBuilder: (context, state) {
-              return const MaterialPage(
+              return MaterialPage(
+                fullscreenDialog: true,
                 child: EditTransactionScreen(),
+              );
+            },
+          ),
+          GoRoute(
+            path: 'edit',
+            name: AppRoute.editTransaction.name,
+            pageBuilder: (context, state) {
+              final transaction = state.extra as TransactionModel?;
+              return MaterialPage(
+                key: state.pageKey,
+                fullscreenDialog: true,
+                child: EditTransactionScreen(transaction: transaction),
               );
             },
           ),
@@ -74,10 +89,11 @@ GoRouter goRouter(Ref ref) {
       final isSigninComplete = signInRepository.isSignincomplete();
       if (!isSigninComplete) {
         if (state.location != '/' && state.location != '/signin') {
-          return '/';
+          return state.namedLocation(AppRoute.onBoarding.name);
+          // return '/';
         }
       } else if (state.location == '/' || state.location == '/signin') {
-        return '/home';
+        return state.namedLocation(AppRoute.home.name);
       }
       return null;
     },

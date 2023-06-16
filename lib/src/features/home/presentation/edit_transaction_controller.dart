@@ -8,26 +8,25 @@ part 'edit_transaction_controller.g.dart';
 class EditTransactionController extends _$EditTransactionController {
   @override
   FutureOr<void> build() {}
-  Future<bool> addTransaction({
-    required String name,
-    required DateTime dateTime,
-    required TransactionType transactionType,
-    required String amount,
-  }) async {
+  Future<bool> submit({required TransactionModel transactionModel}) async {
     final currentUser = ref.read(authRepositoryProvider).currentUser;
     if (currentUser == null) {
       throw AssertionError('User can\'t be null');
     }
     final transactionRepository = ref.read(transactionRepositoryProvider);
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      await transactionRepository.addTransaction(
-          amount: amount,
-          dateTime: dateTime,
-          name: name,
-          transactionType: transactionType,
-          userId: currentUser.uid);
-    });
+    if (transactionModel.firestoreId == null) {
+      state = await AsyncValue.guard(() async {
+        await transactionRepository.addTransaction(
+            transaction: transactionModel, userId: currentUser.uid);
+      });
+    } else {
+      state = await AsyncValue.guard(() async {
+        await transactionRepository.updateTransaction(
+            transaction: transactionModel, userId: currentUser.uid);
+      });
+    }
+
     return !state.hasError;
   }
 }

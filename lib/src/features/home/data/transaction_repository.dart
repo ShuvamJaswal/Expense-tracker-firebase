@@ -12,21 +12,23 @@ class TransactionRepository {
   static String transactionPath(String uid, String tranactionId) =>
       'users/$uid/transactions/$tranactionId';
   static String transactionsPath(String uid) => 'users/$uid/transactions';
-  Future<void> addTransaction({
+  Future<void> updateTransaction({
+    required TransactionModel transaction,
     required String userId,
-    required String name,
-    required DateTime dateTime,
-    required TransactionType transactionType,
-    required String amount,
-  }) =>
-      _firestore.collection(transactionsPath(userId)).add(
-        {
-          'name': name,
-          'dateTime': dateTime.millisecondsSinceEpoch,
-          'transactionType': transactionType.toString().split('.')[1],
-          'amount': amount,
-        },
-      );
+  }) {
+    return _firestore
+        .doc(transactionPath(userId, transaction.firestoreId.toString()))
+        .update(transaction.toJson());
+  }
+
+  Future<void> addTransaction({
+    required TransactionModel transaction,
+    required String userId,
+  }) {
+    return _firestore
+        .collection(transactionsPath(userId))
+        .add(transaction.toJson());
+  }
 
   Query<TransactionModel> queryTransactions({required String uid}) =>
       _firestore.collection(transactionsPath(uid)).withConverter(

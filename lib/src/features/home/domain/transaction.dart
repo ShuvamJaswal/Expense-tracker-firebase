@@ -2,7 +2,7 @@ enum TransactionType { income, expense }
 
 class TransactionModel {
   final String name;
-  final String firestoreId;
+  final String? firestoreId;
   final DateTime dateTime;
   final TransactionType transactionType;
   final String amount;
@@ -11,7 +11,7 @@ class TransactionModel {
     required this.dateTime,
     required this.transactionType,
     required this.amount,
-    required this.firestoreId,
+    this.firestoreId,
   });
 
   Map<String, dynamic> toJson() {
