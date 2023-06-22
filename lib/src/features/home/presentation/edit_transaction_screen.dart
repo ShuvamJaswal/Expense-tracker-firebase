@@ -14,6 +14,32 @@ class EditTransactionScreen extends ConsumerStatefulWidget {
 }
 
 class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
+  bool _validateAndSaveForm() {
+    final form = _formKey.currentState!;
+    if (form.validate()) {
+      form.save();
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> _submit() async {
+    if (_validateAndSaveForm()) {
+      final success = await ref
+          .read(editTransactionControllerProvider.notifier)
+          .submit(
+              transactionModel: TransactionModel(
+                  name: _nameController.text,
+                  dateTime: DateTime.now(),
+                  transactionType: tType,
+                  amount: _amountController.text,
+                  firestoreId: firestoreid));
+      if (success && mounted) {
+        context.pop();
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -41,98 +67,103 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
           title: Text(widget.transaction == null ? "Add" : "Edit"),
         ),
         body: SingleChildScrollView(
-            child: Card(
-          child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  key: _formKey,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
-                              }
-                              return null;
-                            },
-                            controller: _nameController,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              labelText: "Name",
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
-                              }
-                              return null;
-                            },
-                            controller: _amountController,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              labelText: "Amount",
-                            ),
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('Income'),
-                            StatefulBuilder(
-                              builder: (context, setState) => Switch(
-                                value: switchState,
-                                onChanged: (value) {
-                                  if (value) {
-                                    tType = TransactionType.expense;
-                                  } else {
-                                    tType = TransactionType.income;
-                                  }
-                                  setState(() {
-                                    switchState = value;
-                                  });
-                                },
-                              ),
-                            ),
-                            const Text('Expense'),
-                          ],
-                        ),
-                        ElevatedButton(
-                            onPressed: () async {
-                              if (_formKey.currentState!.validate()) {
-                                final bool success = await ref
-                                    .read(editTransactionControllerProvider
-                                        .notifier)
-                                    .submit(
-                                        transactionModel: TransactionModel(
-                                            name: _nameController.text,
-                                            dateTime: DateTime.now(),
-                                            transactionType: tType,
-                                            amount: _amountController.text,
-                                            firestoreId: firestoreid));
-                                if (success && mounted) {
-                                  context.pop();
+            child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Card(
+            child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                    key: _formKey,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextFormField(
+                              onSaved: (value) =>
+                                  _nameController.text = value!.trim(),
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              validator: (value) {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    value.trim().isEmpty) {
+                                  return 'Please enter some text';
                                 }
-                              }
-                            },
-                            child: Text(
-                                widget.transaction == null ? "Add" : "Update"))
-                      ]))),
+                                return null;
+                              },
+                              controller: _nameController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                labelText: "Name",
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextFormField(
+                              onSaved: (value) =>
+                                  _amountController.text = value!.trim(),
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                signed: false,
+                                decimal: false,
+                              ),
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a numeric value.';
+                                }
+                                if (int.tryParse(value) == null) {
+                                  return 'Please enter a numeric value.';
+                                }
+                                return null;
+                              },
+                              controller: _amountController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                labelText: "Amount",
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text('Income'),
+                              StatefulBuilder(
+                                builder: (context, setState) => Switch(
+                                  value: switchState,
+                                  onChanged: (value) {
+                                    if (value) {
+                                      tType = TransactionType.expense;
+                                    } else {
+                                      tType = TransactionType.income;
+                                    }
+                                    setState(() {
+                                      switchState = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                              const Text('Expense'),
+                            ],
+                          ),
+                          ElevatedButton(
+                              onPressed: _submit,
+                              child: Text(widget.transaction == null
+                                  ? "Add"
+                                  : "Update"))
+                        ]))),
+          ),
         )));
   }
 }

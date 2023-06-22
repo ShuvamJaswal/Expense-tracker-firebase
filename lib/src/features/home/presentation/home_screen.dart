@@ -1,3 +1,4 @@
+import 'package:expense_tracker/src/features/home/presentation/transaction_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -44,21 +45,24 @@ class HomeScreen extends ConsumerWidget {
               icon: const Icon(Icons.person)),
         ],
       ),
-      body: FirestoreListView<TransactionModel>(
-          query: query,
-          emptyBuilder: (context) => const Center(child: Text('No data')),
-          errorBuilder: (context, error, stackTrace) => Center(
-                child: Text(error.toString()),
-              ),
-          loadingBuilder: (context) => const Center(
-                child: SpinKitThreeBounce(
-                  color: Colors.blueAccent,
-                  size: 50.0,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: FirestoreListView<TransactionModel>(
+            query: query,
+            emptyBuilder: (context) => const Center(child: Text('No data')),
+            errorBuilder: (context, error, stackTrace) => Center(
+                  child: Text(error.toString()),
                 ),
-              ),
-          itemBuilder: (context, doc) {
-            return TransactionTile(transactionModel: doc.data());
-          }),
+            loadingBuilder: (context) => const Center(
+                  child: SpinKitThreeBounce(
+                    color: Colors.blueAccent,
+                    size: 50.0,
+                  ),
+                ),
+            itemBuilder: (context, doc) {
+              return TransactionTile(transactionModel: doc.data());
+            }),
+      ),
     );
   }
 }
@@ -68,17 +72,30 @@ class TransactionTile extends StatelessWidget {
   final TransactionModel transactionModel;
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListTile(
-          onTap: () => context.pushNamed(AppRoute.editTransaction.name,
-              extra: transactionModel),
-          title: Text("Name: ${transactionModel.name}"),
-          subtitle: Text(
-              "Type: ${transactionModel.transactionType == TransactionType.income ? "Income" : "Expense"}"),
-          trailing: Column(
-            children: [
-              Text(
+    return GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+          enableDrag: true,
+          context: context,
+          builder: (context) =>
+              TransactionDetailScreen(transactionModel: transactionModel),
+        );
+      },
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListTile(
+            title: Material(
+                color: Colors.transparent,
+                child: Text("Name: ${transactionModel.name}")),
+            subtitle: Material(
+              color: Colors.transparent,
+              child: Text(
+                  "Type: ${transactionModel.transactionType == TransactionType.income ? "Income" : "Expense"}"),
+            ),
+            trailing: Material(
+              color: Colors.transparent,
+              child: Text(
                 (transactionModel.transactionType == TransactionType.income
                         ? "+"
                         : "-") +
@@ -90,10 +107,15 @@ class TransactionTile extends StatelessWidget {
                         ? Colors.green
                         : Colors.red),
               ),
-              Text(DateFormat('kk:mm dd/mm/yyyy')
-                  .format(transactionModel.dateTime))
-            ],
+            ),
+            leading: Material(
+              color: Colors.transparent,
+              child:
+                  Text(DateFormat('E \n dd').format(transactionModel.dateTime)),
+            ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

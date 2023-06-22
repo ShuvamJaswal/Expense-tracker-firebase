@@ -30,6 +30,10 @@ class TransactionRepository {
         .add(transaction.toJson());
   }
 
+  Future<void> deleteTransaction(
+          {required String uid, required String transactionId}) =>
+      _firestore.doc(transactionPath(uid, transactionId)).delete();
+
   Query<TransactionModel> queryTransactions({required String uid}) =>
       _firestore.collection(transactionsPath(uid)).withConverter(
             fromFirestore: (snapshot, _) =>

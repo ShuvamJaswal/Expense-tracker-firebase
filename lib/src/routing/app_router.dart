@@ -1,6 +1,7 @@
 // ignore: depend_on_referenced_packages
 import 'package:async/async.dart';
 import 'package:expense_tracker/src/features/home/domain/transaction.dart';
+import 'package:expense_tracker/src/features/home/presentation/transaction_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +23,8 @@ enum AppRoute {
   addTransaction,
   profile,
   signin,
-  editTransaction
+  editTransaction,
+  transactionDetail,
 }
 
 @riverpod
@@ -61,8 +63,20 @@ GoRouter goRouter(Ref ref) {
               final transaction = state.extra as TransactionModel?;
               return MaterialPage(
                 key: state.pageKey,
-                fullscreenDialog: true,
+                // fullscreenDialog: true,
                 child: EditTransactionScreen(transaction: transaction),
+              );
+            },
+          ),
+          GoRoute(
+            path: 'detail',
+            name: AppRoute.transactionDetail.name,
+            pageBuilder: (context, state) {
+              final transaction = state.extra as TransactionModel;
+              return MaterialPage(
+                key: state.pageKey,
+                // fullscreenDialog: true,
+                child: TransactionDetailScreen(transactionModel: transaction),
               );
             },
           ),

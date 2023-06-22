@@ -8,6 +8,18 @@ part 'edit_transaction_controller.g.dart';
 class EditTransactionController extends _$EditTransactionController {
   @override
   FutureOr<void> build() {}
+  Future<bool> deleteEntry(String transactionId) async {
+    final currentUser = ref.read(authRepositoryProvider).currentUser;
+    if (currentUser == null) {
+      throw AssertionError('User can\'t be null');
+    }
+    final repository = ref.read(transactionRepositoryProvider);
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => repository.deleteTransaction(
+        uid: currentUser.uid.toString(), transactionId: transactionId));
+    return !state.hasError;
+  }
+
   Future<bool> submit({required TransactionModel transactionModel}) async {
     final currentUser = ref.read(authRepositoryProvider).currentUser;
     if (currentUser == null) {

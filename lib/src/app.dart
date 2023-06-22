@@ -9,6 +9,8 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final goRouter = ref.watch(goRouterProvider);
     return MaterialApp.router(
+      theme: ThemeData.dark(useMaterial3: true),
+      // theme: ThemeData.dark().copyWith(useMaterial3: true),
       routerConfig: goRouter,
     );
   }
