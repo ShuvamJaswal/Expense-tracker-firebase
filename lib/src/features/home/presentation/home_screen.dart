@@ -111,7 +111,7 @@ class TransactionTile extends StatelessWidget {
             leading: Material(
               color: Colors.transparent,
               child:
-                  Text(DateFormat('E \n dd').format(transactionModel.dateTime)),
+                  Text(DateFormat('E \ndd').format(transactionModel.dateTime)),
             ),
           ),
         ),

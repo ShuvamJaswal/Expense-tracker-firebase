@@ -1,22 +1,31 @@
 import 'package:expense_tracker/src/features/home/domain/transaction.dart';
 import 'package:expense_tracker/src/features/home/presentation/edit_transaction_controller.dart';
 import 'package:expense_tracker/src/routing/app_router.dart';
-import 'package:expense_tracker/src/utils/async_ui/error_snackbar_on_async.dart';
-import 'package:expense_tracker/src/utils/async_ui/loading_on_async.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-class TransactionDetailScreen extends ConsumerWidget {
+class TransactionDetailScreen extends ConsumerStatefulWidget {
   const TransactionDetailScreen({super.key, required this.transactionModel});
   final TransactionModel transactionModel;
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen<AsyncValue<void>>(editTransactionControllerProvider, (_, state) {
-      state.showSnackbarOnError(context);
-      state.showLoading(context);
-    });
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _TransactionDetailScreenState();
+}
+
+class _TransactionDetailScreenState
+    extends ConsumerState<TransactionDetailScreen> {
+  late TransactionModel transactionModel;
+
+  @override
+  void initState() {
+    super.initState();
+    transactionModel = widget.transactionModel;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -27,7 +36,7 @@ class TransactionDetailScreen extends ConsumerWidget {
                   bool success = await ref
                       .read(editTransactionControllerProvider.notifier)
                       .deleteEntry(transactionModel.firestoreId.toString());
-                  if (success) {
+                  if (success && mounted) {
                     context.pop();
                   }
                 },
@@ -61,7 +70,7 @@ class TransactionDetailScreen extends ConsumerWidget {
                   ),
                   const Divider(),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(16.0, 4, 16.0, 20),
+                    padding: const EdgeInsets.fromLTRB(16.0, 4, 16.0, 20),
                     child: Text(
                       'Date ${DateFormat('dd/mm/yy HH:MM').format(transactionModel.dateTime)}',
                       textAlign: TextAlign.left,
@@ -75,9 +84,15 @@ class TransactionDetailScreen extends ConsumerWidget {
                               backgroundColor: Colors.grey[800],
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 30, vertical: 10)),
-                          onPressed: () {
-                            context.pushNamed(AppRoute.editTransaction.name,
+                          onPressed: () async {
+                            TransactionModel? val = await context.pushNamed(
+                                AppRoute.editTransaction.name,
                                 extra: transactionModel);
+                            if (val != null) {
+                              setState(() {
+                                transactionModel = val;
+                              });
+                            }
                           },
                           icon: const Icon(Icons.edit),
                           label: const Text("Edit")),

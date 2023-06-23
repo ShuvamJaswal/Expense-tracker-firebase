@@ -25,17 +25,17 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
 
   Future<void> _submit() async {
     if (_validateAndSaveForm()) {
+      TransactionModel transactionModel = TransactionModel(
+          name: _nameController.text,
+          dateTime: DateTime.now(),
+          transactionType: tType,
+          amount: _amountController.text,
+          firestoreId: firestoreid);
       final success = await ref
           .read(editTransactionControllerProvider.notifier)
-          .submit(
-              transactionModel: TransactionModel(
-                  name: _nameController.text,
-                  dateTime: DateTime.now(),
-                  transactionType: tType,
-                  amount: _amountController.text,
-                  firestoreId: firestoreid));
+          .submit(transactionModel: transactionModel);
       if (success && mounted) {
-        context.pop();
+        context.pop(transactionModel);
       }
     }
   }

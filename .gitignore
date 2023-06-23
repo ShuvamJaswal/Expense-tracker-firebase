@@ -47,3 +47,4 @@ app.*.map.json
 
 #Firebase Related
 /lib/firebase_options.dart
+.firebase/hosting.YnVpbGRcd2Vi.cache
