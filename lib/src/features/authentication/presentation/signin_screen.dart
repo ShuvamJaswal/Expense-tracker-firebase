@@ -25,8 +25,7 @@ class Sign extends ConsumerWidget {
     final authproviders = ref.watch(authProvidersProvider);
 
     return Theme(
-      data: ThemeData(
-        brightness: Brightness.light,
+      data: ThemeData.dark(useMaterial3: true).copyWith(
         visualDensity: VisualDensity.standard,
         useMaterial3: true,
         inputDecorationTheme: const InputDecorationTheme(
@@ -56,11 +55,13 @@ class Sign extends ConsumerWidget {
           },
           footerBuilder: (context, action) {
             return Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(
+                vertical: 8.0,
+              ),
               child: Center(
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50), // NEW
+                      minimumSize: const Size.fromHeight(40), // NEW
                     ),
                     onPressed: () async {
                       await ref

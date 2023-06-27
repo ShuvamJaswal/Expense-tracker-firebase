@@ -40,4 +40,18 @@ final transactionRepositoryProvider =
 
 typedef TransactionRepositoryRef
     = AutoDisposeProviderRef<TransactionRepository>;
+String _$insightsHash() => r'a276deaa10a5c8e5bbff78e96a2e5c856959ea95';
+
+/// See also [insights].
+@ProviderFor(insights)
+final insightsProvider = AutoDisposeStreamProvider<Map<String, int>>.internal(
+  insights,
+  name: r'insightsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$insightsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef InsightsRef = AutoDisposeStreamProviderRef<Map<String, int>>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

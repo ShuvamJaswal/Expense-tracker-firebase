@@ -10,16 +10,21 @@ class CustomProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final providers = ref.watch(authProvidersProvider);
-    return ProfileScreen(
-      providers: providers,
-      children: [
-        ElevatedButton(
-          onPressed: () {
-            context.pop();
-          },
-          child: const Text('Go back'),
-        ),
-      ],
+    return Theme(
+      data: ThemeData.light(
+        useMaterial3: true,
+      ),
+      child: ProfileScreen(
+        providers: providers,
+        children: [
+          OutlinedButton(
+            onPressed: () {
+              context.pop();
+            },
+            child: const Text('Go back'),
+          ),
+        ],
+      ),
     );
   }
 }

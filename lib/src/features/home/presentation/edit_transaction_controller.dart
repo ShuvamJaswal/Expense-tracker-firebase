@@ -30,7 +30,7 @@ class EditTransactionController extends _$EditTransactionController {
     if (transactionModel.firestoreId == null) {
       state = await AsyncValue.guard(() async {
         await transactionRepository.addTransaction(
-            transaction: transactionModel, userId: currentUser.uid);
+            transactionModel: transactionModel, userId: currentUser.uid);
       });
     } else {
       state = await AsyncValue.guard(() async {

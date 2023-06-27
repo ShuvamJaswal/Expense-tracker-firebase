@@ -7,7 +7,7 @@ part of 'edit_transaction_controller.dart';
 // **************************************************************************
 
 String _$editTransactionControllerHash() =>
-    r'ae54ab3d380f63a33df502ad8818661cf4992373';
+    r'248f26fc550d0853b9c8c30cea64c5f327a59b81';
 
 /// See also [EditTransactionController].
 @ProviderFor(EditTransactionController)

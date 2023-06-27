@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_tracker/src/features/authentication/data/firebase_auth_repository.dart';
 import 'package:expense_tracker/src/features/home/domain/transaction.dart';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'transaction_repository.g.dart';
 
@@ -16,18 +17,22 @@ class TransactionRepository {
     required TransactionModel transaction,
     required String userId,
   }) {
-    return _firestore
-        .doc(transactionPath(userId, transaction.firestoreId.toString()))
-        .update(transaction.toJson());
+    final batch = _firestore.batch();
+    batch.update(
+        _firestore
+            .doc(transactionPath(userId, transaction.firestoreId.toString())),
+        transaction.toJson());
+    return batch.commit();
   }
 
   Future<void> addTransaction({
-    required TransactionModel transaction,
+    required TransactionModel transactionModel,
     required String userId,
   }) {
-    return _firestore
-        .collection(transactionsPath(userId))
-        .add(transaction.toJson());
+    final batch = _firestore.batch();
+    batch.set(_firestore.collection(transactionsPath(userId)).doc(),
+        transactionModel.toJson());
+    return batch.commit();
   }
 
   Future<void> deleteTransaction(
@@ -55,4 +60,28 @@ Query<TransactionModel> transactionsQuery(TransactionsQueryRef ref) {
 @riverpod
 TransactionRepository transactionRepository(TransactionRepositoryRef ref) {
   return TransactionRepository(FirebaseFirestore.instance);
+}
+
+@riverpod
+Stream<Map<String, int>> insights(InsightsRef ref) async* {
+  final user = ref.watch(firebaseAuthProvider).currentUser;
+  if (user != null) {
+    var docRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('transactions');
+    int income = 0;
+    int expense = 0;
+
+    await docRef.get().then((value) {
+      for (var element in value.docs) {
+        if (element.data()['transactionType'] == 'income') {
+          income += int.tryParse(element.data()['amount']) ?? 0;
+        } else {
+          expense += int.tryParse(element.data()['amount']) ?? 0;
+        }
+      }
+    });
+    yield {'income': -income, 'expense': expense};
+  }
 }

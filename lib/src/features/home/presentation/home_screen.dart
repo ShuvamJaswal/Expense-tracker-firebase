@@ -1,4 +1,5 @@
 import 'package:expense_tracker/src/features/home/presentation/transaction_details_screen.dart';
+import 'package:expense_tracker/src/utils/dialog/loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -23,7 +24,6 @@ class HomeScreen extends ConsumerWidget {
       state.showLoading(context);
     });
     final query = ref.watch(transactionsQueryProvider);
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
@@ -47,21 +47,27 @@ class HomeScreen extends ConsumerWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: FirestoreListView<TransactionModel>(
-            query: query,
-            emptyBuilder: (context) => const Center(child: Text('No data')),
-            errorBuilder: (context, error, stackTrace) => Center(
-                  child: Text(error.toString()),
-                ),
-            loadingBuilder: (context) => const Center(
-                  child: SpinKitThreeBounce(
-                    color: Colors.blueAccent,
-                    size: 50.0,
-                  ),
-                ),
-            itemBuilder: (context, doc) {
-              return TransactionTile(transactionModel: doc.data());
-            }),
+        child: Column(children: [
+          const Expanded(flex: 1, child: InsightsWidget()),
+          Expanded(
+            flex: 2,
+            child: FirestoreListView<TransactionModel>(
+                query: query,
+                emptyBuilder: (context) => const Center(child: Text('No data')),
+                errorBuilder: (context, error, stackTrace) => Center(
+                      child: Text(error.toString()),
+                    ),
+                loadingBuilder: (context) => const Center(
+                      child: SpinKitThreeBounce(
+                        color: Colors.blueAccent,
+                        size: 50.0,
+                      ),
+                    ),
+                itemBuilder: (context, doc) {
+                  return TransactionTile(transactionModel: doc.data());
+                }),
+          ),
+        ]),
       ),
     );
   }
@@ -116,6 +122,86 @@ class TransactionTile extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class InsightsWidget extends ConsumerWidget {
+  const InsightsWidget({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final insights = ref.watch(insightsProvider);
+    return insights.when(
+      data: (data) {
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Card(
+                  color: Colors.black,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('INCOME'),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          (data['income'] ?? 0).toString(),
+                          style: TextStyle(color: Colors.red),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Card(
+                  color: Colors.black,
+                  child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Text('TOTAL'),
+                          Text(((data['income'] ?? 0) - (data['expense'] ?? 0))
+                              .toString())
+                        ],
+                      )),
+                ),
+                Card(
+                  color: Colors.black,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('EXPENSE'),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          (data['expense'] ?? 0).toString(),
+                          style: TextStyle(color: Colors.green),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      error: (error, stackTrace) => const Text('Wrong'),
+      loading: () => const LoadingDialog(),
     );
   }
 }
