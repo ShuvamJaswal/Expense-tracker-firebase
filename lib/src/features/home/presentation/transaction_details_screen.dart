@@ -65,9 +65,20 @@ class _TransactionDetailScreenState
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 50,
-                  ),
+                  transactionModel.description == null
+                      ? const SizedBox(
+                          height: 50,
+                        )
+                      : SizedBox(
+                          height: 60,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 8),
+                            child: SingleChildScrollView(
+                                child:
+                                    Text(transactionModel.description ?? '')),
+                          ),
+                        ),
                   const Divider(),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 4, 16.0, 20),

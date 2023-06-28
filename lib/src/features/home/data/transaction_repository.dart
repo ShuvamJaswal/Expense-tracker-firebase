@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_tracker/src/features/authentication/data/firebase_auth_repository.dart';
 import 'package:expense_tracker/src/features/home/domain/transaction.dart';
-import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'transaction_repository.g.dart';
 
@@ -73,15 +72,19 @@ Stream<Map<String, int>> insights(InsightsRef ref) async* {
     int income = 0;
     int expense = 0;
 
-    await docRef.get().then((value) {
-      for (var element in value.docs) {
+    await for (var snapshot in docRef.snapshots()) {
+      income = 0;
+      expense = 0;
+
+      for (var element in snapshot.docs) {
         if (element.data()['transactionType'] == 'income') {
           income += int.tryParse(element.data()['amount']) ?? 0;
         } else {
           expense += int.tryParse(element.data()['amount']) ?? 0;
         }
       }
-    });
-    yield {'income': -income, 'expense': expense};
+
+      yield {'income': income, 'expense': -expense};
+    }
   }
 }

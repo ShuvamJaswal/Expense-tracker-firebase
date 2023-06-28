@@ -32,6 +32,9 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
           dateTime: dateTime,
           transactionType: tType,
           amount: _amountController.text,
+          description: _descriptionController.text.isEmpty
+              ? null
+              : _descriptionController.text,
           firestoreId: firestoreid);
       final success = await ref
           .read(editTransactionControllerProvider.notifier)
@@ -49,6 +52,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
       firestoreid = widget.transaction!.firestoreId;
       _nameController.text = widget.transaction!.name;
       _amountController.text = widget.transaction!.amount;
+      _descriptionController.text = widget.transaction!.description ?? '';
       dateTime = widget.transaction!.dateTime;
       switchState = TransactionType.values.byName(
               widget.transaction!.transactionType.toString().split('.')[1]) ==
@@ -58,6 +62,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
   TransactionType tType = TransactionType.income;
   DateTime dateTime = DateTime.now();
   final TextEditingController _amountController = TextEditingController();
@@ -135,6 +140,24 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                                   ),
                                 ),
                                 labelText: "Amount",
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextFormField(
+                              onSaved: (value) =>
+                                  _descriptionController.text = value!.trim(),
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              controller: _descriptionController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                labelText: "Description",
                               ),
                             ),
                           ),

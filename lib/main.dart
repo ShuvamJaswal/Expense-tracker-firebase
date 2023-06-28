@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'src/app.dart';
@@ -18,6 +19,8 @@ void main() async {
   //     print(e);
   // }
 
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(ProviderScope(
+    child: Container(width: kIsWeb ? 400.0 : double.infinity, child: MyApp()),
+  ));
 }
 // }
