@@ -170,7 +170,7 @@ class InsightsWidget extends ConsumerWidget {
                       children: [
                         const Text('TOTAL'),
                         Text(
-                          ((data['income'] ?? 0) - (data['expense'] ?? 0))
+                          ((data['income'] ?? 0) + (data['expense'] ?? 0))
                               .toString(),
                           style: const TextStyle(fontSize: 20),
                         )
