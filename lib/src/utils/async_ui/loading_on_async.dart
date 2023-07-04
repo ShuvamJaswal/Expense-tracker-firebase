@@ -13,7 +13,7 @@ extension AsyncValueErrorSnackbar on AsyncValue {
         builder: (context) => const LoadingDialog(),
       );
     }
-    if (!isLoading && checkIfADialogIsShowing(context)) {
+    if (!(isLoading) && checkIfADialogIsShowing(context)) {
       Navigator.of(context).pop();
     }
   }

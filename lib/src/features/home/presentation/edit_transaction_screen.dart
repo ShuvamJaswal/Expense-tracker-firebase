@@ -1,8 +1,9 @@
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
+import 'package:expense_tracker/src/utils/dialog/check_if_a_dialog_is_showing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:expense_tracker/src/features/home/domain/transaction.dart';
+import 'package:expense_tracker/src/features/home/domain/transaction_model.dart';
 import 'package:expense_tracker/src/features/home/presentation/edit_transaction_controller.dart';
 import 'package:intl/intl.dart';
 
@@ -26,12 +27,13 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
   }
 
   Future<void> _submit() async {
+    FocusManager.instance.primaryFocus?.unfocus();
     if (_validateAndSaveForm()) {
       TransactionModel transactionModel = TransactionModel(
           name: _nameController.text,
           dateTime: dateTime,
           transactionType: tType,
-          amount: _amountController.text,
+          amount: num.parse(_amountController.text),
           description: _descriptionController.text.isEmpty
               ? null
               : _descriptionController.text,
@@ -41,6 +43,9 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
           .submit(transactionModel: transactionModel);
       if (success && mounted) {
         context.pop(transactionModel);
+        if (checkIfADialogIsShowing(context) && context.canPop()) {
+          context.pop();
+        }
       }
     }
   }
@@ -51,7 +56,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     if (widget.transaction != null) {
       firestoreid = widget.transaction!.firestoreId;
       _nameController.text = widget.transaction!.name;
-      _amountController.text = widget.transaction!.amount;
+      _amountController.text = widget.transaction!.amount.toString();
       _descriptionController.text = widget.transaction!.description ?? '';
       dateTime = widget.transaction!.dateTime;
       switchState = TransactionType.values.byName(

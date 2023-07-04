@@ -1,6 +1,6 @@
 import 'package:expense_tracker/src/features/authentication/data/firebase_auth_repository.dart';
 import 'package:expense_tracker/src/features/home/data/transaction_repository.dart';
-import 'package:expense_tracker/src/features/home/domain/transaction.dart';
+import 'package:expense_tracker/src/features/home/domain/transaction_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'edit_transaction_controller.g.dart';
 

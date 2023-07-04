@@ -9,7 +9,7 @@ class OnBoardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Expense Tracker.'),
+        title: const Text('Expense Tracker'),
       ),
       body: Center(
         child: ElevatedButton(

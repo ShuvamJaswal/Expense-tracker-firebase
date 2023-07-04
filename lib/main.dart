@@ -4,9 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'src/app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  usePathUrlStrategy();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -19,8 +21,8 @@ void main() async {
   //     print(e);
   // }
 
-  runApp(ProviderScope(
-    child: Container(width: kIsWeb ? 400.0 : double.infinity, child: MyApp()),
+  runApp(const ProviderScope(
+    child: SizedBox(width: kIsWeb ? 400.0 : double.infinity, child: MyApp()),
   ));
 }
 // }

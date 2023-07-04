@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_tracker/src/features/authentication/data/firebase_auth_repository.dart';
-import 'package:expense_tracker/src/features/home/domain/transaction.dart';
+import 'package:expense_tracker/src/features/home/domain/transaction_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'transaction_repository.g.dart';
 
@@ -38,8 +38,17 @@ class TransactionRepository {
           {required String uid, required String transactionId}) =>
       _firestore.doc(transactionPath(uid, transactionId)).delete();
 
-  Query<TransactionModel> queryTransactions({required String uid}) =>
-      _firestore.collection(transactionsPath(uid)).withConverter(
+  Query<TransactionModel> queryTransactions(
+          {required String uid,
+          required String orderBy,
+          required String filter,
+          required bool orderSortDescending,
+          required String transactionType}) =>
+      _firestore
+          .collection(transactionsPath(uid))
+          .where('transactionType', whereIn: transactionType.split(','))
+          .orderBy(orderBy, descending: orderSortDescending)
+          .withConverter(
             fromFirestore: (snapshot, _) =>
                 TransactionModel.fromJson(snapshot.data()!, snapshot.id),
             toFirestore: (transaction, _) => transaction.toJson(),
@@ -47,13 +56,24 @@ class TransactionRepository {
 }
 
 @riverpod
-Query<TransactionModel> transactionsQuery(TransactionsQueryRef ref) {
+Query<TransactionModel> transactionsQuery(
+  TransactionsQueryRef ref, {
+  required String orderBy,
+  required String filter,
+  required bool orderSortDescending,
+  required String transactionType,
+}) {
   final user = ref.watch(firebaseAuthProvider).currentUser;
   if (user == null) {
     throw AssertionError('User can\'t be null');
   }
   final repository = ref.watch(transactionRepositoryProvider);
-  return repository.queryTransactions(uid: user.uid);
+  return repository.queryTransactions(
+      uid: user.uid,
+      filter: filter,
+      orderBy: orderBy,
+      orderSortDescending: orderSortDescending,
+      transactionType: transactionType);
 }
 
 @riverpod
@@ -62,15 +82,15 @@ TransactionRepository transactionRepository(TransactionRepositoryRef ref) {
 }
 
 @riverpod
-Stream<Map<String, int>> insights(InsightsRef ref) async* {
+Stream<Map<String, num>> insights(InsightsRef ref) async* {
   final user = ref.watch(firebaseAuthProvider).currentUser;
   if (user != null) {
     var docRef = FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
         .collection('transactions');
-    int income = 0;
-    int expense = 0;
+    num income = 0;
+    num expense = 0;
 
     await for (var snapshot in docRef.snapshots()) {
       income = 0;
@@ -78,9 +98,9 @@ Stream<Map<String, int>> insights(InsightsRef ref) async* {
 
       for (var element in snapshot.docs) {
         if (element.data()['transactionType'] == 'income') {
-          income += int.tryParse(element.data()['amount']) ?? 0;
+          income += num.tryParse(element.data()['amount'].toString()) ?? 0;
         } else {
-          expense += int.tryParse(element.data()['amount']) ?? 0;
+          expense += num.tryParse(element.data()['amount'].toString()) ?? 0;
         }
       }
 
