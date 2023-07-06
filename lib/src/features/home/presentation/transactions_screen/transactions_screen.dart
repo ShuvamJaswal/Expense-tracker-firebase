@@ -202,9 +202,10 @@ class TransactionsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Expense Tracker'),
-        actions: const [
+        actions: [
+          // ignore: prefer_const_constructors If using const arrow direction and position is not changing, prefer_const_constructors
           SortBuilder(),
-          SizedBox(
+          const SizedBox(
             width: 10,
           )
         ],

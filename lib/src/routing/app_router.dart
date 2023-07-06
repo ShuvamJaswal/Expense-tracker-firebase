@@ -1,5 +1,6 @@
 // ignore: depend_on_referenced_packages
 import 'package:async/async.dart';
+import 'package:expense_tracker/src/features/about/presentation/about_screen.dart';
 import 'package:expense_tracker/src/features/home/domain/transaction_model.dart';
 import 'package:expense_tracker/src/features/home/presentation/transactions_screen/transactions_screen.dart';
 import 'package:expense_tracker/src/features/home/presentation/transaction_details_screen.dart';
@@ -71,6 +72,7 @@ enum AppRoute {
   signin,
   editTransaction,
   transactionDetail,
+  about,
 }
 
 @riverpod
@@ -84,6 +86,10 @@ GoRouter goRouter(Ref ref) {
     refreshListenable: GoRouterRefreshStream(refreshStream),
     initialLocation: '/',
     routes: [
+      GoRoute(
+          path: '/about',
+          name: AppRoute.about.name,
+          builder: (context, state) => AboutScreen()),
       GoRoute(
         path: '/',
         name: AppRoute.onBoarding.name,
@@ -148,7 +154,7 @@ GoRouter goRouter(Ref ref) {
           ),
           StatefulShellBranch(routes: [
             GoRoute(
-                path: '/income',
+                path: '/transactions',
                 name: AppRoute.income.name,
                 pageBuilder: (context, state) => const MaterialPage(
                       fullscreenDialog: true,

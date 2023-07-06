@@ -53,8 +53,12 @@ class _TransactionDetailScreenState
               children: [
                 Center(
                   child: Text(
-                    transactionModel.amount.toString(),
-                    style: const TextStyle(fontSize: 50),
+                    transactionModel.amount.abs().toString(),
+                    style: TextStyle(
+                        fontSize: 50,
+                        color: transactionModel.amount < 0
+                            ? Colors.red
+                            : Colors.green),
                   ),
                 ),
                 Center(
@@ -82,7 +86,7 @@ class _TransactionDetailScreenState
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16.0, 4, 16.0, 20),
                   child: Text(
-                    'Date ${DateFormat('dd/mm/yy HH:MM').format(transactionModel.dateTime)}',
+                    'Date ${DateFormat("dd/MM/yy 'at' HH:mm").format(transactionModel.dateTime)}',
                     textAlign: TextAlign.left,
                   ),
                 ),

@@ -3,7 +3,6 @@ import 'package:expense_tracker/src/features/home/presentation/transaction_detai
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-//TODO:Add negative sign in amount on firestore itself to help with sorting.
 class TransactionTile extends StatelessWidget {
   const TransactionTile({super.key, required this.transactionModel});
   final TransactionModel transactionModel;
@@ -28,15 +27,15 @@ class TransactionTile extends StatelessWidget {
                 child: Text("Name: ${transactionModel.name}")),
             subtitle: Material(
               color: Colors.transparent,
-              child: Text(
-                  "Type: ${transactionModel.transactionType == TransactionType.income ? "Income" : "Expense"}"),
+              child: Text(DateFormat("MM/yy 'at' HH:mm")
+                  .format(transactionModel.dateTime)),
             ),
             trailing: Material(
-              color: Colors.transparent,
+              color: const Color.fromARGB(0, 18, 10, 10),
               child: Text(
                 (transactionModel.transactionType == TransactionType.income
                         ? "+"
-                        : "-") +
+                        : "") +
                     transactionModel.amount.toString(),
                 style: TextStyle(
                     fontSize: 20,

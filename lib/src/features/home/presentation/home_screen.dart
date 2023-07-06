@@ -1,3 +1,4 @@
+import 'package:expense_tracker/src/features/about/presentation/about_screen.dart';
 import 'package:expense_tracker/src/features/home/data/transaction_repository.dart';
 import 'package:expense_tracker/src/features/home/presentation/widgets/transaction_tile.dart';
 import 'package:expense_tracker/src/features/home/presentation/widgets/insights_widget.dart';
@@ -38,12 +39,57 @@ class HomeScreen extends ConsumerWidget {
         actions: [
           IconButton(
               onPressed: () {
-                ref.read(authRepositoryProvider).signOut();
+                context.pushNamed(AppRoute.about.name);
               },
-              icon: const Icon(Icons.logout)),
+              icon: const Icon(Icons.info)),
           IconButton(
               onPressed: () {
-                GoRouter.of(context).pushNamed(AppRoute.profile.name);
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      scrollable: true,
+                      title: const Text("Login"),
+                      content: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Form(
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: "Name",
+                                  icon: Icon(Icons.account_box),
+                                ),
+                              ),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: "Email",
+                                  icon: Icon(Icons.email),
+                                ),
+                              ),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: "Message",
+                                  icon: Icon(Icons.message),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      actions: [
+                        ElevatedButton(
+                          child: const Text("submit"),
+                          onPressed: () {
+                            // your code
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+
+                // GoRouter.of(context).pushNamed(AppRoute.profile.name);
               },
               icon: const Icon(Icons.person)),
         ],

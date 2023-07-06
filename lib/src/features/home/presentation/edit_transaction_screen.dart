@@ -33,7 +33,9 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
           name: _nameController.text,
           dateTime: dateTime,
           transactionType: tType,
-          amount: num.parse(_amountController.text),
+          amount: tType.toString().split('.')[1] == TransactionType.expense.name
+              ? -1 * num.parse(_amountController.text)
+              : num.parse(_amountController.text),
           description: _descriptionController.text.isEmpty
               ? null
               : _descriptionController.text,
@@ -56,8 +58,9 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
     if (widget.transaction != null) {
       firestoreid = widget.transaction!.firestoreId;
       _nameController.text = widget.transaction!.name;
-      _amountController.text = widget.transaction!.amount.toString();
+      _amountController.text = widget.transaction!.amount.abs().toString();
       _descriptionController.text = widget.transaction!.description ?? '';
+      tType = widget.transaction!.transactionType;
       dateTime = widget.transaction!.dateTime;
       switchState = TransactionType.values.byName(
               widget.transaction!.transactionType.toString().split('.')[1]) ==

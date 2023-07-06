@@ -49,7 +49,13 @@ class InsightsWidget extends ConsumerWidget {
                         Text(
                           ((data['income'] ?? 0) + (data['expense'] ?? 0))
                               .toString(),
-                          style: const TextStyle(fontSize: 20),
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: (data['income'] ?? 0) +
+                                          (data['expense'] ?? 0) <
+                                      0
+                                  ? Colors.red
+                                  : Colors.green),
                         )
                       ],
                     )),

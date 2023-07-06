@@ -104,7 +104,7 @@ Stream<Map<String, num>> insights(InsightsRef ref) async* {
         }
       }
 
-      yield {'income': income, 'expense': -expense};
+      yield {'income': income, 'expense': expense};
     }
   }
 }
