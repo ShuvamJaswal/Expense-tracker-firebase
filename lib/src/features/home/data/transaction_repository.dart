@@ -21,7 +21,7 @@ class TransactionRepository {
         _firestore
             .doc(transactionPath(userId, transaction.firestoreId.toString())),
         transaction.toJson());
-    return batch.commit();
+    return batch.commit().timeout(Duration(seconds: 5));
   }
 
   Future<void> addTransaction({
@@ -31,7 +31,7 @@ class TransactionRepository {
     final batch = _firestore.batch();
     batch.set(_firestore.collection(transactionsPath(userId)).doc(),
         transactionModel.toJson());
-    return batch.commit();
+    return batch.commit().timeout(Duration(seconds: 5));
   }
 
   Future<void> deleteTransaction(

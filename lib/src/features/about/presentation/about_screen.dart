@@ -1,37 +1,45 @@
-//TODO: Add error handling
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:expense_tracker/src/features/about/presentation/about_controller.dart';
+import 'package:expense_tracker/src/utils/async_ui/error_snackbar_on_async.dart';
+import 'package:expense_tracker/src/utils/async_ui/loading_on_async.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class AboutScreen extends StatelessWidget {
-  AboutScreen({super.key});
+  const AboutScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('About')),
+      appBar: AppBar(title: const Text('About')),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(''),
-          Text(''),
-          Text(''),
-          Text(''),
-          ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(content: FeedbackWidget()),
-                );
-              },
-              child: Text('Feedback'))
+          const Text(
+            'EXPENSE TRACKER',
+            style: TextStyle(fontSize: 40),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: ElevatedButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) =>
+                          AlertDialog(content: FeedbackWidget()),
+                    );
+                  },
+                  child: const Text('Feedback')),
+            ),
+          )
         ],
       ),
     );
   }
 }
 
-class FeedbackWidget extends StatelessWidget {
+class FeedbackWidget extends ConsumerWidget {
   FeedbackWidget({
     super.key,
   });
@@ -45,26 +53,28 @@ class FeedbackWidget extends StatelessWidget {
     return false;
   }
 
-  Future<bool> _submit() async {
-    FocusManager.instance.primaryFocus?.unfocus();
-    if (_validateAndSaveForm()) {
-      String user = FirebaseAuth.instance.currentUser?.uid ?? 'Anon';
-      await FirebaseFirestore.instance
-          .collection('utilities/feedbacks/All')
-          .add({
-        'Description': _feedbackController.text,
-        'Created_at': DateTime.now().millisecondsSinceEpoch,
-        'user': user
-      });
-      return true;
-    }
-    return false;
-  }
-
   final _formKey = GlobalKey<FormState>();
   final _feedbackController = TextEditingController();
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen<AsyncValue<void>>(aboutControllerProvider, (_, state) {
+      state.showSnackbarOnError(context);
+      state.showLoading(context);
+    });
+    Future<void> submit() async {
+      FocusManager.instance.primaryFocus?.unfocus();
+      if (_validateAndSaveForm()) {
+        final success = await ref
+            .read(aboutControllerProvider.notifier)
+            .submit(description: _feedbackController.text);
+        if (success) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Feedback Submitted.')));
+          context.pop();
+        }
+      }
+    }
+
     return Form(
       key: _formKey,
       child: Column(
@@ -96,12 +106,7 @@ class FeedbackWidget extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () async {
-              if (await _submit()) {
-                context.pop();
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Something went wrong')));
-              }
+              await submit();
             },
             child: Text('Submit Feedback'),
           )

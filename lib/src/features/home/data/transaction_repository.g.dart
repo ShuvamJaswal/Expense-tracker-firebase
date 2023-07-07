@@ -154,7 +154,7 @@ final transactionRepositoryProvider =
 
 typedef TransactionRepositoryRef
     = AutoDisposeProviderRef<TransactionRepository>;
-String _$insightsHash() => r'f9f587e3b106128884fa85d3eacf5aac325e4006';
+String _$insightsHash() => r'9d072c2462461d7d3a854b10769dc231f34cc768';
 
 /// See also [insights].
 @ProviderFor(insights)

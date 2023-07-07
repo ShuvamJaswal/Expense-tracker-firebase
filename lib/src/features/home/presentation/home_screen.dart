@@ -1,11 +1,9 @@
-import 'package:expense_tracker/src/features/about/presentation/about_screen.dart';
 import 'package:expense_tracker/src/features/home/data/transaction_repository.dart';
 import 'package:expense_tracker/src/features/home/presentation/widgets/transaction_tile.dart';
 import 'package:expense_tracker/src/features/home/presentation/widgets/insights_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:expense_tracker/src/features/authentication/data/firebase_auth_repository.dart';
 import 'package:expense_tracker/src/features/home/domain/transaction_model.dart';
 import 'package:expense_tracker/src/features/home/presentation/edit_transaction_controller.dart';
 import 'package:expense_tracker/src/routing/app_router.dart';

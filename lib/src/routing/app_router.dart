@@ -89,7 +89,7 @@ GoRouter goRouter(Ref ref) {
       GoRoute(
           path: '/about',
           name: AppRoute.about.name,
-          builder: (context, state) => AboutScreen()),
+          builder: (context, state) => const AboutScreen()),
       GoRoute(
         path: '/',
         name: AppRoute.onBoarding.name,
