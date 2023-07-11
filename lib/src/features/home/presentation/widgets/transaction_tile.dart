@@ -36,7 +36,10 @@ class TransactionTile extends StatelessWidget {
                 (transactionModel.transactionType == TransactionType.income
                         ? "+"
                         : "") +
-                    transactionModel.amount.toString(),
+                    NumberFormat.compactCurrency(
+                      decimalDigits: 0,
+                      symbol: '',
+                    ).format(transactionModel.amount).toString(),
                 style: TextStyle(
                     fontSize: 20,
                     color: transactionModel.transactionType ==

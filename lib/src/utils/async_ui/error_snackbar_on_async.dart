@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 extension AsyncValueErrorSnackbar on AsyncValue {
   void showSnackbarOnError(BuildContext context) {
     if (!isLoading && hasError) {
-      debugPrint(error.toString());
       final message = error.toString();
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(message)));
+      debugPrint(message);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please check your connection!")));
     }
   }
 }

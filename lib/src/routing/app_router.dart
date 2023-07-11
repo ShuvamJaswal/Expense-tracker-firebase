@@ -25,7 +25,6 @@ class ScaffoldWithNavBar extends StatelessWidget {
     Key? key,
   }) : super(key: key ?? const ValueKey<String>('ScaffoldWithNavBar'));
 
-  /// The navigation shell and container for the branch Navigators.
   final StatefulNavigationShell navigationShell;
 
   @override
@@ -33,20 +32,22 @@ class ScaffoldWithNavBar extends StatelessWidget {
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.shifting,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-              backgroundColor: Colors.blue),
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.wallet),
-              label: 'Income',
-              backgroundColor: Colors.green),
+            icon: Icon(Icons.wallet),
+            label: 'Income',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-              backgroundColor: Colors.blue),
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
         ],
         currentIndex: navigationShell.currentIndex,
         onTap: (int index) => _onTap(context, index),

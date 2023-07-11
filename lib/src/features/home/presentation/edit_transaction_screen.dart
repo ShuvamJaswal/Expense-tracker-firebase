@@ -43,12 +43,13 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
       final success = await ref
           .read(editTransactionControllerProvider.notifier)
           .submit(transactionModel: transactionModel);
-      if (success && mounted) {
+      // if (success && mounted) {
+      if (mounted) {
         context.pop(transactionModel);
         if (checkIfADialogIsShowing(context) && context.canPop()) {
           context.pop();
         }
-      }
+      } // }
     }
   }
 

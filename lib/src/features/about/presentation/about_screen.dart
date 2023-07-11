@@ -67,9 +67,9 @@ class FeedbackWidget extends ConsumerWidget {
         final success = await ref
             .read(aboutControllerProvider.notifier)
             .submit(description: _feedbackController.text);
-        if (success) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Feedback Submitted.')));
+        if (success && context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Feedback Submitted.')));
           context.pop();
         }
       }
@@ -101,14 +101,14 @@ class FeedbackWidget extends ConsumerWidget {
                   return null;
                 }),
           ),
-          SizedBox(
+          const SizedBox(
             height: 30,
           ),
           ElevatedButton(
             onPressed: () async {
               await submit();
             },
-            child: Text('Submit Feedback'),
+            child: const Text('Submit Feedback'),
           )
         ],
       ),

@@ -35,8 +35,12 @@ class TransactionRepository {
   }
 
   Future<void> deleteTransaction(
-          {required String uid, required String transactionId}) =>
-      _firestore.doc(transactionPath(uid, transactionId)).delete();
+      {required String uid, required String transactionId}) {
+    return _firestore
+        .doc(transactionPath(uid, transactionId))
+        .delete()
+        .timeout(const Duration(seconds: 5));
+  }
 
   Query<TransactionModel> queryTransactions(
           {required String uid,
@@ -89,22 +93,43 @@ Stream<Map<String, num>> insights(InsightsRef ref) async* {
         .collection('users')
         .doc(user.uid)
         .collection('transactions');
+
     num income = 0;
     num expense = 0;
 
-    await for (var snapshot in docRef.snapshots()) {
+    yield* docRef.snapshots().asyncMap((event) async {
       income = 0;
       expense = 0;
-
-      for (var element in snapshot.docs) {
-        if (element.data()['transactionType'] == 'income') {
-          income += num.tryParse(element.data()['amount'].toString()) ?? 0;
-        } else {
-          expense += num.tryParse(element.data()['amount'].toString()) ?? 0;
+      await docRef
+          .limit(50)
+          .orderBy('dateTime', descending: true)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        for (var doc in querySnapshot.docs) {
+          // querySnapshot.docs.forEach((doc) {
+          if (doc['transactionType'] == 'income') {
+            income += num.tryParse(doc['amount'].toString()) ?? 0;
+          } else {
+            expense += num.tryParse(doc['amount'].toString()) ?? 0;
+          }
         }
-      }
+      });
+      return {'income': income, 'expense': expense};
+    });
 
-      yield {'income': income, 'expense': expense};
-    }
+    // await for (var snapshot in docRef.snapshots()) {
+    //   income = 0;
+    //   expense = 0;
+
+    //   for (var element in snapshot.docs) {
+    //     if (element.data()['transactionType'] == 'income') {
+    //       income += num.tryParse(element.data()['amount'].toString()) ?? 0;
+    //     } else {
+    //       expense += num.tryParse(element.data()['amount'].toString()) ?? 0;
+    //     }
+    //   }
+
+    //   yield {'income': income, 'expense': expense};
+    // }
   }
 }

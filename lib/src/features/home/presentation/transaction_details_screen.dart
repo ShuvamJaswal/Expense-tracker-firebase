@@ -17,6 +17,16 @@ class TransactionDetailScreen extends ConsumerStatefulWidget {
 class _TransactionDetailScreenState
     extends ConsumerState<TransactionDetailScreen> {
   late TransactionModel transactionModel;
+  Future<void> _delete() async {
+    final success = await ref
+        .read(editTransactionControllerProvider.notifier)
+        .deleteEntry(transactionModel.firestoreId.toString());
+    // if (success && mounted) {
+    if (mounted) {
+      context.pop();
+      context.pop();
+    }
+  } // }
 
   @override
   void initState() {
@@ -32,14 +42,18 @@ class _TransactionDetailScreenState
         appBar: AppBar(
           actions: [
             IconButton(
-                onPressed: () async {
-                  bool success = await ref
-                      .read(editTransactionControllerProvider.notifier)
-                      .deleteEntry(transactionModel.firestoreId.toString());
-                  if (success && mounted) {
-                    context.pop();
-                  }
-                },
+                onPressed: _delete //() async {
+                //   // context.pop();
+                //   await ref
+                //       .read(editTransactionControllerProvider.notifier)
+                //       .deleteEntry(transactionModel.firestoreId.toString())
+                //       .timeout(Duration(seconds: 2));
+                //   // if (success && mounted) {
+                //   context.pop();
+                //   context.pop();
+                //   // }
+                // },
+                ,
                 icon: const Icon(Icons.delete))
           ],
         ),
@@ -103,7 +117,7 @@ class _TransactionDetailScreenState
                           TransactionModel? val = await context.pushNamed(
                               AppRoute.editTransaction.name,
                               extra: transactionModel);
-                          if (val != null) {
+                          if (val != null && context.mounted) {
                             setState(() {
                               transactionModel = val;
                             });

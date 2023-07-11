@@ -15,8 +15,11 @@ class EditTransactionController extends _$EditTransactionController {
     }
     final repository = ref.read(transactionRepositoryProvider);
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => repository.deleteTransaction(
-        uid: currentUser.uid.toString(), transactionId: transactionId));
+
+    state = await AsyncValue.guard(() async {
+      await repository.deleteTransaction(
+          uid: currentUser.uid.toString(), transactionId: transactionId);
+    });
     return !state.hasError;
   }
 
