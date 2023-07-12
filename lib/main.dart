@@ -1,4 +1,5 @@
 //TODO CHnage forgot password register verification email text.
+import 'package:flutter_web_frame/flutter_web_frame.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +17,11 @@ void main() async {
   );
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  runApp(const ProviderScope(
-    child: SizedBox(width: kIsWeb ? 400.0 : double.infinity, child: MyApp()),
+  runApp(ProviderScope(
+    child: FlutterWebFrame(
+        maximumSize: const Size(450.0, 812.0),
+        enabled: kIsWeb,
+        backgroundColor: Colors.grey,
+        builder: (context) => const MyApp()),
   ));
 }

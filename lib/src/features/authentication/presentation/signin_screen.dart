@@ -68,7 +68,7 @@ class Sign extends ConsumerWidget {
                           .watch(signinControllerProvider.notifier)
                           .completeAnonSignin();
                     },
-                    child: const Text('Continue Without account.')),
+                    child: const Text('Continue Without account')),
               ),
             );
           },

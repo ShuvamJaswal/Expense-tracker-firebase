@@ -17,8 +17,8 @@ class InsightsWidget extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text('Last 50 transactions'),
               ),
               Expanded(
@@ -113,7 +113,7 @@ class InsightsWidget extends ConsumerWidget {
         );
       },
       error: (error, stackTrace) => const Text('Wrong'),
-      loading: () => LoadingDialog(),
+      loading: () => const LoadingDialog(),
     );
   }
 }

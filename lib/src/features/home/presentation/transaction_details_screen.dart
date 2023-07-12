@@ -18,12 +18,17 @@ class _TransactionDetailScreenState
     extends ConsumerState<TransactionDetailScreen> {
   late TransactionModel transactionModel;
   Future<void> _delete() async {
-    final success = await ref
+    await ref
         .read(editTransactionControllerProvider.notifier)
         .deleteEntry(transactionModel.firestoreId.toString());
     // if (success && mounted) {
-    if (mounted) {
+    if (Navigator.of(context).canPop()) {
       context.pop();
+    }
+    if (Navigator.of(context).canPop()) {
+      context.pop();
+    }
+    if (Navigator.of(context).canPop()) {
       context.pop();
     }
   } // }
@@ -41,20 +46,7 @@ class _TransactionDetailScreenState
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           actions: [
-            IconButton(
-                onPressed: _delete //() async {
-                //   // context.pop();
-                //   await ref
-                //       .read(editTransactionControllerProvider.notifier)
-                //       .deleteEntry(transactionModel.firestoreId.toString())
-                //       .timeout(Duration(seconds: 2));
-                //   // if (success && mounted) {
-                //   context.pop();
-                //   context.pop();
-                //   // }
-                // },
-                ,
-                icon: const Icon(Icons.delete))
+            IconButton(onPressed: _delete, icon: const Icon(Icons.delete))
           ],
         ),
         body: Padding(
@@ -125,21 +117,22 @@ class _TransactionDetailScreenState
                         },
                         icon: const Icon(Icons.edit),
                         label: const Text("Edit")),
-                    TextButton.icon(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[800],
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 10)),
-                        onPressed: () {
-                          showDialog(
-                            barrierColor: Colors.black,
-                            context: context,
-                            builder: (context) => const Center(
-                                child: Text('No implementation yet')),
-                          );
-                        },
-                        icon: const Icon(Icons.horizontal_split_outlined),
-                        label: const Text("Split")),
+                    //TODO:
+                    // TextButton.icon(
+                    //     style: ElevatedButton.styleFrom(
+                    //         backgroundColor: Colors.grey[800],
+                    //         padding: const EdgeInsets.symmetric(
+                    //             horizontal: 30, vertical: 10)),
+                    //     onPressed: () {
+                    //       showDialog(
+                    //         barrierColor: Colors.black,
+                    //         context: context,
+                    //         builder: (context) => const Center(
+                    //             child: Text('No implementation yet')),
+                    //       );
+                    //     },
+                    //     icon: const Icon(Icons.horizontal_split_outlined),
+                    //     label: const Text("Split")),
                   ],
                 ),
                 const SizedBox(

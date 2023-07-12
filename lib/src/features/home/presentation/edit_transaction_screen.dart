@@ -40,7 +40,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
               ? null
               : _descriptionController.text,
           firestoreId: firestoreid);
-      final success = await ref
+      await ref
           .read(editTransactionControllerProvider.notifier)
           .submit(transactionModel: transactionModel);
       // if (success && mounted) {
@@ -83,158 +83,170 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
         appBar: AppBar(
           title: Text(widget.transaction == null ? "Add" : "Edit"),
         ),
-        body: SingleChildScrollView(
-            child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Card(
-            child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Form(
-                    key: _formKey,
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextFormField(
-                              onSaved: (value) =>
-                                  _nameController.text = value!.trim(),
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              validator: (value) {
-                                if (value == null ||
-                                    value.isEmpty ||
-                                    value.trim().isEmpty) {
-                                  return 'Please enter some text';
-                                }
-                                return null;
-                              },
-                              controller: _nameController,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                labelText: "Name",
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextFormField(
-                              onSaved: (value) =>
-                                  _amountController.text = value!.trim(),
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                signed: false,
-                                decimal: false,
-                              ),
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter a numeric value.';
-                                }
-                                if (int.tryParse(value) == null) {
-                                  return 'Please enter a numeric value.';
-                                }
-                                return null;
-                              },
-                              controller: _amountController,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                labelText: "Amount",
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextFormField(
-                              onSaved: (value) =>
-                                  _descriptionController.text = value!.trim(),
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              controller: _descriptionController,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                labelText: "Description",
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: DateTimeField(
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                labelText: "Date",
-                              ),
-                              initialValue: dateTime,
-                              onSaved: (newValue) =>
-                                  dateTime = newValue ?? DateTime.now(),
-                              format: DateFormat("MMMM d, yyyy 'at' h:mma"),
-                              onShowPicker: (context, currentValue) async {
-                                return await showDatePicker(
-                                  context: context,
-                                  firstDate: DateTime(1900),
-                                  initialDate: currentValue ?? DateTime.now(),
-                                  lastDate: DateTime.now(),
-                                ).then((DateTime? date) async {
-                                  if (date != null) {
-                                    final time = await showTimePicker(
-                                      context: context,
-                                      initialTime: TimeOfDay.fromDateTime(
-                                          currentValue ?? DateTime.now()),
-                                    );
-                                    return DateTimeField.combine(date, time);
-                                  } else {
-                                    return currentValue;
-                                  }
-                                });
-                              },
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+        body: Consumer(
+          builder: (_, WidgetRef ref, __) {
+            return SingleChildScrollView(
+                child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Form(
+                        key: _formKey,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              const Text('Income'),
-                              StatefulBuilder(
-                                builder: (context, setState) => Switch(
-                                  value: switchState,
-                                  onChanged: (value) {
-                                    if (value) {
-                                      tType = TransactionType.expense;
-                                    } else {
-                                      tType = TransactionType.income;
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                  onSaved: (value) =>
+                                      _nameController.text = value!.trim(),
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  validator: (value) {
+                                    if (value == null ||
+                                        value.isEmpty ||
+                                        value.trim().isEmpty) {
+                                      return 'Please enter some text';
                                     }
-                                    setState(() {
-                                      switchState = value;
+                                    if (value.length > 15) {
+                                      return 'Please keep the name short.';
+                                    }
+                                    return null;
+                                  },
+                                  controller: _nameController,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                    ),
+                                    labelText: "Name",
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                  onSaved: (value) =>
+                                      _amountController.text = value!.trim(),
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                    signed: false,
+                                    decimal: false,
+                                  ),
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter a numeric value.';
+                                    }
+                                    if (value.length > 8) {
+                                      return 'Please enter a valid value.';
+                                    }
+                                    if (int.tryParse(value) == null) {
+                                      return 'Please enter a numeric value.';
+                                    }
+                                    return null;
+                                  },
+                                  controller: _amountController,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                    ),
+                                    labelText: "Amount",
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                  onSaved: (value) => _descriptionController
+                                      .text = value!.trim(),
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  controller: _descriptionController,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                    ),
+                                    labelText: "Description",
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: DateTimeField(
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                    ),
+                                    labelText: "Date",
+                                  ),
+                                  initialValue: dateTime,
+                                  onSaved: (newValue) =>
+                                      dateTime = newValue ?? DateTime.now(),
+                                  format: DateFormat("MMMM d, yyyy 'at' h:mma"),
+                                  onShowPicker: (context, currentValue) async {
+                                    return await showDatePicker(
+                                      context: context,
+                                      firstDate: DateTime(1900),
+                                      initialDate:
+                                          currentValue ?? DateTime.now(),
+                                      lastDate: DateTime.now(),
+                                    ).then((DateTime? date) async {
+                                      if (date != null) {
+                                        final time = await showTimePicker(
+                                          context: context,
+                                          initialTime: TimeOfDay.fromDateTime(
+                                              currentValue ?? DateTime.now()),
+                                        );
+                                        return DateTimeField.combine(
+                                            date, time);
+                                      } else {
+                                        return currentValue;
+                                      }
                                     });
                                   },
                                 ),
                               ),
-                              const Text('Expense'),
-                            ],
-                          ),
-                          ElevatedButton(
-                              onPressed: _submit,
-                              child: Text(widget.transaction == null
-                                  ? "Add"
-                                  : "Update"))
-                        ]))),
-          ),
-        )));
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text('Income'),
+                                  StatefulBuilder(
+                                    builder: (context, setState) => Switch(
+                                      value: switchState,
+                                      onChanged: (value) {
+                                        if (value) {
+                                          tType = TransactionType.expense;
+                                        } else {
+                                          tType = TransactionType.income;
+                                        }
+                                        setState(() {
+                                          switchState = value;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  const Text('Expense'),
+                                ],
+                              ),
+                              ElevatedButton(
+                                  onPressed: _submit,
+                                  child: Text(widget.transaction == null
+                                      ? "Add"
+                                      : "Update"))
+                            ]))),
+              ),
+            ));
+          },
+        ));
   }
 }

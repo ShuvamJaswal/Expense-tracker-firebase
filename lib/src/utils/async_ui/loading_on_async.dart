@@ -16,7 +16,9 @@ extension AsyncValueErrorSnackbar on AsyncValue {
     }
     if (!(isLoading) && checkIfADialogIsShowing(context)) {
       //pops wrong screen not loading dialog
-      Navigator.of(context).pop();
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
 
       // context.pop();
     }
