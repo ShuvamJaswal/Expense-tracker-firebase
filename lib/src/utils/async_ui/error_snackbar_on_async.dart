@@ -6,8 +6,9 @@ extension AsyncValueErrorSnackbar on AsyncValue {
     if (!isLoading && hasError) {
       final message = error.toString();
       debugPrint(message);
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please check your connection!")));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              "Please check your connection!\nData will be stored offline till then.")));
     }
   }
 }

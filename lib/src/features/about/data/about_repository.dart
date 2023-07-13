@@ -7,6 +7,7 @@ class AboutRepository {
   const AboutRepository(
     this._firestore,
   );
+
   final FirebaseFirestore _firestore;
   static String feedbackPath() => 'utilities/feedbacks/all';
 

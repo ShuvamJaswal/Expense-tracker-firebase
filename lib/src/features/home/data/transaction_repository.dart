@@ -4,8 +4,11 @@ import 'package:expense_tracker/src/features/home/domain/transaction_model.dart'
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'transaction_repository.g.dart';
 
+//Remove firebase persistance
+// FirebaseFirestore.instance.settings = Settings(persistenceEnabled:false);
+//after creating firestore instance
 class TransactionRepository {
-  const TransactionRepository(
+  TransactionRepository(
     this._firestore,
   );
   final FirebaseFirestore _firestore;

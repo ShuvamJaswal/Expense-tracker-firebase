@@ -1,4 +1,3 @@
-//TODO CHnage forgot password register verification email text.
 import 'package:flutter_web_frame/flutter_web_frame.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

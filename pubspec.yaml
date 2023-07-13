@@ -28,6 +28,7 @@ dependencies:
   firebase_ui_auth: ^1.4.2
   datetime_picker_formfield_new: ^2.1.0
   flutter_web_frame: ^1.0.0
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:

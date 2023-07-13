@@ -1,13 +1,14 @@
 import 'package:expense_tracker/src/features/home/domain/transaction_model.dart';
 import 'package:expense_tracker/src/features/home/presentation/edit_transaction_controller.dart';
 import 'package:expense_tracker/src/features/home/presentation/query_transactions_controller.dart';
+import 'package:expense_tracker/src/features/home/presentation/widgets/shimmer_list.dart';
 import 'package:expense_tracker/src/features/home/presentation/widgets/transaction_tile.dart';
 import 'package:expense_tracker/src/utils/async_ui/error_snackbar_on_async.dart';
 import 'package:expense_tracker/src/utils/async_ui/loading_on_async.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SortBuilder extends ConsumerStatefulWidget {
   const SortBuilder({super.key});
@@ -223,12 +224,7 @@ class TransactionsScreen extends ConsumerWidget {
                 errorBuilder: (context, error, stackTrace) => Center(
                       child: Text(error.toString()),
                     ),
-                loadingBuilder: (context) => const Center(
-                      child: SpinKitThreeBounce(
-                        color: Colors.blueAccent,
-                        size: 50.0,
-                      ),
-                    ),
+                loadingBuilder: (context) => ShimmerList(),
                 itemBuilder: (context, doc) {
                   return TransactionTile(transactionModel: doc.data());
                 }),
