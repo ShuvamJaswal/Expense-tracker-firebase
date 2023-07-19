@@ -15,6 +15,11 @@ class AboutScreen extends StatelessWidget {
             'EXPENSE TRACKER',
             style: TextStyle(fontSize: 40),
           ),
+          SizedBox(
+            height: 300,
+            width: 300,
+            child: Image(image: AssetImage('assets/logo.png')),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Center(

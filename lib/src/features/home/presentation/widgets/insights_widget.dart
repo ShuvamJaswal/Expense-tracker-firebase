@@ -115,9 +115,9 @@ class InsightsWidget extends ConsumerWidget {
         },
         error: (error, stackTrace) => const Text('Wrong'),
         loading: () => Shimmer.fromColors(
-              baseColor: Color(0xFF1D1D1D),
-              highlightColor: Color(0XFF3C4042),
-              child: SizedBox.expand(child: Card(color: Colors.white)),
+              baseColor: const Color(0xFF1D1D1D),
+              highlightColor: const Color(0XFF3C4042),
+              child: const SizedBox.expand(child: Card(color: Colors.white)),
             ));
   }
 }

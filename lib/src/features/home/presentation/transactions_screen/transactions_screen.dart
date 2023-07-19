@@ -224,7 +224,7 @@ class TransactionsScreen extends ConsumerWidget {
                 errorBuilder: (context, error, stackTrace) => Center(
                       child: Text(error.toString()),
                     ),
-                loadingBuilder: (context) => ShimmerList(),
+                loadingBuilder: (context) => const ShimmerList(),
                 itemBuilder: (context, doc) {
                   return TransactionTile(transactionModel: doc.data());
                 }),

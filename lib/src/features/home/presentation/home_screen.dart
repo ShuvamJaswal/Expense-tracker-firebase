@@ -11,7 +11,6 @@ import 'package:expense_tracker/src/routing/app_router.dart';
 import 'package:expense_tracker/src/utils/async_ui/error_snackbar_on_async.dart';
 import 'package:expense_tracker/src/utils/async_ui/loading_on_async.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
-import 'package:shimmer/shimmer.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -56,7 +55,7 @@ class HomeScreen extends ConsumerWidget {
                 errorBuilder: (context, error, stackTrace) => Center(
                       child: Text(error.toString()),
                     ),
-                loadingBuilder: (context) => ShimmerList(),
+                loadingBuilder: (context) => const ShimmerList(),
                 itemBuilder: (context, doc) {
                   return TransactionTile(transactionModel: doc.data());
                 }),
