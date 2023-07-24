@@ -8,7 +8,6 @@ import 'package:expense_tracker/src/utils/async_ui/loading_on_async.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shimmer/shimmer.dart';
 
 class SortBuilder extends ConsumerStatefulWidget {
   const SortBuilder({super.key});

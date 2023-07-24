@@ -7,34 +7,36 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('About')),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Text(
-            'EXPENSE TRACKER',
-            style: TextStyle(fontSize: 40),
-          ),
-          SizedBox(
-            height: 300,
-            width: 300,
-            child: Image(image: AssetImage('assets/logo.png')),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) =>
-                          AlertDialog(content: FeedbackWidget()),
-                    );
-                  },
-                  child: const Text('Feedback')),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text(
+              'EXPENSE TRACKER',
+              style: TextStyle(fontSize: 40),
             ),
-          )
-        ],
+            const SizedBox(
+              height: 300,
+              width: 300,
+              child: Image(image: AssetImage('assets/logo.png')),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) =>
+                            AlertDialog(content: FeedbackWidget()),
+                      );
+                    },
+                    child: const Text('Feedback')),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
